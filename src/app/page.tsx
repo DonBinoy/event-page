@@ -6,6 +6,8 @@ import {
 } from "framer-motion";
 import { useRef, useState, useEffect, createContext, useContext, ReactNode } from "react";
 import { ArrowDown, ArrowRight, MapPin, Phone, Globe, Check, Zap, ChevronDown, Menu, X, Moon, Sun } from "lucide-react";
+import { Navbar } from "../components/Navbar";
+import { Footer } from "../components/Footer";
 
 /* ─── TOKENS (Light mode + Premium Teal) ─────────── */
 /* ─── THEMES ─────────────────────────────────────── */
@@ -165,8 +167,8 @@ function ImageRing() {
       >
         {imgs.map((img, i) => {
           const ang = (i / imgs.length) * Math.PI * 2;
-          const x = Math.cos(ang) * R;
-          const y = Math.sin(ang) * R;
+          const x = (Math.cos(ang) * R).toFixed(3);
+          const y = (Math.sin(ang) * R).toFixed(3);
           return (
             <div key={img} style={{ position: "absolute", top: "50%", left: "50%", transform: `translate(-50%, -50%) translate(${x}px, ${y}px)` }}>
               {/* Individual card counter-rotating */}
@@ -226,7 +228,7 @@ function SHdr({ idx, label }: { idx: string; label: string }) {
 }
 
 /* ─── NAVBAR ─────────────────────────────────────── */
-function Navbar() {
+function OldNavbar() {
   const { tokens: { A, AH, AL, BG, FG, M, S, B, W }, theme, toggleTheme } = useTheme();
   const [sc, setSc] = useState(false);
   const [op, setOp] = useState(false);
@@ -873,6 +875,7 @@ function Tickets() {
                 </ul>
 
                 <motion.button id={`ticket-${t.id}`}
+                  suppressHydrationWarning
                   whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
                   className={t.featured ? "shimmer-cta" : ""}
                   style={{ width: "100%", padding: "14px 0", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, cursor: "none", border: t.featured ? "none" : `1px solid ${B}`, background: t.featured ? A : "transparent", color: t.featured ? W : FG, transition: "all 0.25s" }}
@@ -896,7 +899,7 @@ function Tickets() {
 }
 
 /* ─── FOOTER ─────────────────────────────────────── */
-function Footer() {
+function OldFooter() {
   const { tokens: { A, AH, AL, BG, FG, M, S, B, W }, theme, toggleTheme } = useTheme();
   const t1 = "SOLSTICE · JUNE 21 2026 · MUMBAI · NAMMA STUDIO · ART & MUSIC · EDITION 01 · ";
   return (
@@ -911,10 +914,12 @@ function Footer() {
             </div>
             <div style={{ display: "flex", gap: 0, width: "100%", maxWidth: 440 }}>
               <input id="newsletter-email" type="email" placeholder="your@email.com"
+                suppressHydrationWarning
                 style={{ flex: 1, background: "#1a1a1a", border: "1px solid #2A2A2A", borderRight: "none", color: BG, fontSize: 13, padding: "15px 20px", outline: "none", minWidth: 0, fontFamily: "inherit" }}
                 onFocus={e => (e.currentTarget.style.borderColor = AH)}
                 onBlur={e => (e.currentTarget.style.borderColor = "#2A2A2A")} />
               <motion.button id="newsletter-subscribe" className="shimmer-cta"
+                suppressHydrationWarning
                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}
                 style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", padding: "15px 22px", border: "none", cursor: "none", flexShrink: 0, whiteSpace: "nowrap" }}>
                 Notify Me
@@ -956,7 +961,7 @@ function Footer() {
 
 export default function Page() {
   return (
-    <ThemeProvider>
+    <>
       <Cursor />
       <ProgressBar />
       <Navbar />
@@ -968,6 +973,6 @@ export default function Page() {
       <Rules />
       <Tickets />
       <Footer />
-    </ThemeProvider>
+    </>
   );
 }
