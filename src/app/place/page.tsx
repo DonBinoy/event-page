@@ -6,7 +6,7 @@ import { MapPin, Clock, Ticket, Star, Calendar, ArrowDown, ExternalLink, Map, Na
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
 import { useTheme } from "../../components/Theme";
-import { Cursor, ProgressBar, Rev, Chars, SHdr, E } from "../../components/UI";
+import { Cursor, ProgressBar, Rev, Chars, SHdr, E, Soul, Mq } from "../../components/UI";
 
 /* ─── KINETIC VARIETY HERO ──────────────────────── */
 const ROW_1 = [
@@ -24,6 +24,8 @@ const ROW_2 = [
 
 function PlaceHero() {
   const { tokens: { A, FG, M, W, B } } = useTheme();
+  const r = useRef(null);
+  const { scrollYProgress } = useScroll({ target: r, offset: ["start start", "end start"] });
   
   const baseX = useMotionValue(0);
   const [drag, setDrag] = useState(false);
@@ -48,19 +50,30 @@ function PlaceHero() {
   const items2 = [...ROW_2, ...ROW_2, ...ROW_2];
 
   return (
-    <section style={{ position: "relative", minHeight: "100vh", background: W, overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+    <section ref={r} style={{ position: "relative", minHeight: "100vh", background: W, overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center" }}>
       {/* Background Text Decor */}
-      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", opacity: 0.03 }}>
-         <h1 className="font-display" style={{ fontSize: "50vw", fontWeight: 900, color: FG }}>VARKALA</h1>
+      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", opacity: 0.03, overflow: "hidden" }}>
+         <motion.h1 
+           className="font-display"
+           style={{ 
+             scale: useTransform(scrollYProgress, [0, 0.5], [1, 1.5]), 
+             rotate: useTransform(scrollYProgress, [0, 0.5], [0, 5]),
+             fontSize: "50vw", 
+             fontWeight: 900, 
+             color: FG 
+           }}
+         >
+           VARKALA
+         </motion.h1>
       </div>
 
       {/* Kinetic Ribbons */}
       <div style={{ display: "flex", flexDirection: "column", gap: 32, position: "relative", zIndex: 10 }}>
         
         {/* Row 1 */}
-        <motion.div style={{ x: x1, display: "flex", gap: 32, paddingLeft: 32 }}>
+        <motion.div style={{ x: x1, y: useTransform(scrollYProgress, [0, 0.3], [0, -40]), display: "flex", gap: 32, paddingLeft: 32 }}>
           {items1.map((img, i) => (
-            <motion.div key={i} whileHover={{ scale: 1.02, rotate: 1 }} style={{ flexShrink: 0, width: img.w, height: img.h, borderRadius: 24, overflow: "hidden", border: `1px solid ${B}`, boxShadow: "0 30px 60px -15px rgba(0,0,0,0.2)" }}>
+            <motion.div key={i} whileHover={{ scale: 1.05, rotate: 1, zIndex: 100 }} style={{ flexShrink: 0, width: img.w, height: img.h, borderRadius: 24, overflow: "hidden", border: `1px solid ${B}`, boxShadow: "0 30px 60px -15px rgba(0,0,0,0.2)", transition: "transform 0.4s" }}>
               <img src={`/gallery/${img.src}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
             </motion.div>
           ))}
@@ -68,21 +81,21 @@ function PlaceHero() {
 
         {/* Text Overlay Section (Z-index 50) */}
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 50, pointerEvents: "none" }}>
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: E }} style={{ background: "rgba(255,255,255,0.85)", backdropFilter: "blur(40px)", padding: "48px 80px", borderRadius: 32, border: `1px solid ${B}`, textAlign: "center", boxShadow: "0 50px 100px -20px rgba(0,0,0,0.15)" }}>
-            <p className="font-mono" style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: A, fontWeight: 700, marginBottom: 12 }}>Kerala's Coastal Gem</p>
-            <h1 className="font-display" style={{ fontSize: "clamp(3.5rem, 8vw, 6rem)", fontWeight: 700, color: FG, lineHeight: 1, letterSpacing: "-0.04em", margin: 0 }}>VARKALA CLIFF</h1>
-            <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 24, pointerEvents: "auto" }}>
-              {["Beach", "Natural", "Sunset"].map(tag => (
-                <span key={tag} style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: M, border: `1px solid ${B}`, padding: "6px 16px", borderRadius: 40, background: W }}>{tag}</span>
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, ease: E }} style={{ background: "rgba(255,255,255,0.82)", backdropFilter: "blur(60px)", padding: "64px 100px", borderRadius: 40, border: `1px solid ${B}`, textAlign: "center", boxShadow: "0 60px 120px -20px rgba(0,0,0,0.18)" }}>
+            <p className="font-mono" style={{ fontSize: 10, letterSpacing: "0.45em", textTransform: "uppercase", color: A, fontWeight: 700, marginBottom: 16 }}>Kerala's Coastal Gem</p>
+            <Chars text="VARKALA CLIFF" cls="font-display" style={{ fontSize: "clamp(3.5rem, 11vw, 8rem)", fontWeight: 700, color: FG, lineHeight: 1, letterSpacing: "-0.04em", margin: 0 }} />
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 32, pointerEvents: "auto" }}>
+              {["Azure Beach", "Red Laterite", "Golden Sunset"].map(tag => (
+                <motion.span key={tag} whileHover={{ background: A, color: W, borderColor: A }} style={{ fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", color: M, border: `1px solid ${B}`, padding: "8px 20px", borderRadius: 40, background: W, transition: "all 0.3s" }}>{tag}</motion.span>
               ))}
             </div>
           </motion.div>
         </div>
 
         {/* Row 2 */}
-        <motion.div style={{ x: x2, display: "flex", gap: 32, paddingLeft: 100 }}>
+        <motion.div style={{ x: x2, y: useTransform(scrollYProgress, [0, 0.3], [0, 40]), display: "flex", gap: 32, paddingLeft: 100 }}>
           {items2.map((img, i) => (
-            <motion.div key={i} whileHover={{ scale: 1.02, rotate: -1 }} style={{ flexShrink: 0, width: img.w, height: img.h, borderRadius: 24, overflow: "hidden", border: `1px solid ${B}`, boxShadow: "0 30px 60px -15px rgba(0,0,0,0.2)" }}>
+            <motion.div key={i} whileHover={{ scale: 1.05, rotate: -1, zIndex: 100 }} style={{ flexShrink: 0, width: img.w, height: img.h, borderRadius: 24, overflow: "hidden", border: `1px solid ${B}`, boxShadow: "0 30px 60px -15px rgba(0,0,0,0.2)", transition: "transform 0.4s" }}>
               <img src={`/gallery/${img.src}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
             </motion.div>
           ))}
@@ -119,20 +132,24 @@ function QuickFacts() {
 
   return (
     <section style={{ background: S, borderTop: `1px solid ${B}`, borderBottom: `1px solid ${B}`, padding: "40px 36px" }}>
-      <div style={{ maxWidth: 1320, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 32 }}>
-        {facts.map((f, i) => (
-          <Rev key={f.label} delay={i * 0.1}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <div style={{ background: W, width: 44, height: 44, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${B}` }}>
-                <f.icon size={18} color={A} />
-              </div>
-              <div>
-                <p style={{ fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: M, marginBottom: 2 }}>{f.label}</p>
-                <p style={{ fontSize: 13, fontWeight: 700, color: FG }}>{f.val}</p>
-              </div>
-            </div>
-          </Rev>
-        ))}
+      <div style={{ maxWidth: 1320, margin: "0 auto" }}>
+        <Soul y={50} s={0.02}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 32 }}>
+            {facts.map((f, i) => (
+              <Rev key={f.label} delay={i * 0.1}>
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <div style={{ background: W, width: 44, height: 44, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${B}` }}>
+                    <f.icon size={18} color={A} />
+                  </div>
+                  <div>
+                    <p style={{ fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: M, marginBottom: 2 }}>{f.label}</p>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: FG }}>{f.val}</p>
+                  </div>
+                </div>
+              </Rev>
+            ))}
+          </div>
+        </Soul>
       </div>
     </section>
   );
@@ -143,39 +160,43 @@ function DestAbout() {
   const { tokens: { A, FG, M, B, W } } = useTheme();
   return (
     <section style={{ background: W, padding: "140px 36px 80px" }}>
-      <div style={{ maxWidth: 1320, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 100 }} className="about-grid">
-        <Rev>
-          <p style={{ fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: A, fontWeight: 700, marginBottom: 24 }}>The Red Laterite Majesty</p>
-          <h2 className="font-display" style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 700, color: FG, lineHeight: 1.1, marginBottom: 32 }}>
-            Where the cliff meets the Arabian Sea.
-          </h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-            {["Couples", "Solo Travelers", "Backpackers", "Yoga Enthusiasts"].map(tag => (
-              <div key={tag} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 16px", background: "#f8f8f8", borderRadius: 8, border: `1px solid ${B}` }}>
-                <User size={12} color={A} />
-                <span style={{ fontSize: 11, fontWeight: 600, color: FG }}>{tag}</span>
+      <div style={{ maxWidth: 1320, margin: "0 auto" }}>
+        <Soul y={100} s={0.05}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 100 }} className="about-grid">
+            <Rev>
+              <p style={{ fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: A, fontWeight: 700, marginBottom: 24 }}>The Red Laterite Majesty</p>
+              <h2 className="font-display" style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 700, color: FG, lineHeight: 1.1, marginBottom: 32 }}>
+                Where the cliff meets the Arabian Sea.
+              </h2>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                {["Couples", "Solo Travelers", "Backpackers", "Yoga Enthusiasts"].map(tag => (
+                  <div key={tag} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 16px", background: "#f8f8f8", borderRadius: 8, border: `1px solid ${B}` }}>
+                    <User size={12} color={A} />
+                    <span style={{ fontSize: 11, fontWeight: 600, color: FG }}>{tag}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </Rev>
+            <Rev delay={0.2}>
+              <p style={{ fontSize: 16, lineHeight: 1.8, color: M, marginBottom: 32 }}>
+                Varkala Cliff, also known as Papanasam Beach, is a stunning coastal paradise in Kerala famous for its dramatic red laterite cliffs rising majestically from the Arabian Sea. The cliff top is lined with palm trees, beach shacks, cafes, and yoga centers offering breathtaking ocean views.
+              </p>
+              <p style={{ fontSize: 16, lineHeight: 1.8, color: M }}>
+                The natural mineral springs flowing from the cliffs are believed to contain medicinal properties. Perfect for beach lovers, spiritual seekers, and sunset enthusiasts alike.
+              </p>
+              <div style={{ marginTop: 40, borderTop: `1px solid ${B}`, paddingTop: 32, display: "flex", gap: 40 }}>
+                <div>
+                  <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: M, marginBottom: 6 }}>Distance</p>
+                  <p style={{ fontSize: 16, fontWeight: 700, color: FG }}>2 km <span style={{ fontSize: 12, color: M, fontWeight: 400 }}>from Town</span></p>
+                </div>
+                <div>
+                  <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: M, marginBottom: 6 }}>Visit Duration</p>
+                  <p style={{ fontSize: 16, fontWeight: 700, color: FG }}>3h 00m</p>
+                </div>
+              </div>
+            </Rev>
           </div>
-        </Rev>
-        <Rev delay={0.2}>
-          <p style={{ fontSize: 16, lineHeight: 1.8, color: M, marginBottom: 32 }}>
-            Varkala Cliff, also known as Papanasam Beach, is a stunning coastal paradise in Kerala famous for its dramatic red laterite cliffs rising majestically from the Arabian Sea. The cliff top is lined with palm trees, beach shacks, cafes, and yoga centers offering breathtaking ocean views.
-          </p>
-          <p style={{ fontSize: 16, lineHeight: 1.8, color: M }}>
-            The natural mineral springs flowing from the cliffs are believed to contain medicinal properties. Perfect for beach lovers, spiritual seekers, and sunset enthusiasts alike.
-          </p>
-          <div style={{ marginTop: 40, borderTop: `1px solid ${B}`, paddingTop: 32, display: "flex", gap: 40 }}>
-            <div>
-              <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: M, marginBottom: 6 }}>Distance</p>
-              <p style={{ fontSize: 16, fontWeight: 700, color: FG }}>2 km <span style={{ fontSize: 12, color: M, fontWeight: 400 }}>from Town</span></p>
-            </div>
-            <div>
-              <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: M, marginBottom: 6 }}>Visit Duration</p>
-              <p style={{ fontSize: 16, fontWeight: 700, color: FG }}>3h 00m</p>
-            </div>
-          </div>
-        </Rev>
+        </Soul>
       </div>
       <style>{`@media(max-width: 900px) { .about-grid { grid-template-columns: 1fr !important; gap: 48px !important; } }`}</style>
     </section>
@@ -197,14 +218,17 @@ function Itinerary() {
         <SHdr idx="01" label="Highlights & Itinerary" />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 32 }}>
           {STEPS.map((s, i) => (
-            <Rev key={s.id} delay={i * 0.1}>
-              <div style={{ background: W, border: `1px solid ${B}`, borderRadius: 24, padding: 48, height: "100%", position: "relative", overflow: "hidden" }}>
-                <span className="font-display" style={{ position: "absolute", top: -20, right: -10, fontSize: "8rem", fontWeight: 700, color: "#f0f0f0", opacity: 0.5 }}>{i + 1}</span>
-                <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: A, fontWeight: 700, marginBottom: 12 }}>{s.id}</p>
-                <h3 className="font-display" style={{ fontSize: 24, fontWeight: 700, color: FG, marginBottom: 20 }}>{s.title}</h3>
-                <p style={{ fontSize: 13, color: M, lineHeight: 1.8 }}>{s.desc}</p>
-              </div>
-            </Rev>
+            <Soul key={s.id} delay={i * 0.15} y={80} r={i % 2 === 0 ? 3 : -3}>
+              <motion.div whileHover={{ y: -8 }} transition={{ duration: 0.4 }} style={{ background: W, border: `1px solid ${B}`, borderRadius: 32, padding: "56px 48px", height: "100%", position: "relative", overflow: "hidden" }}>
+                <span className="font-display" style={{ position: "absolute", top: -10, right: 10, fontSize: "clamp(5rem, 8vw, 10rem)", fontWeight: 800, color: A, opacity: 0.04, pointerEvents: "none" }}>{i + 1}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+                   <div style={{ width: 8, height: 8, background: A }} />
+                   <p style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: A, fontWeight: 700 }}>Step {i + 1}</p>
+                </div>
+                <h3 className="font-display" style={{ fontSize: "clamp(1.6rem, 2.5vw, 2.2rem)", fontWeight: 700, color: FG, marginBottom: 20 }}>{s.title}</h3>
+                <p style={{ fontSize: 14, color: M, lineHeight: 1.85 }}>{s.desc}</p>
+              </motion.div>
+            </Soul>
           ))}
         </div>
       </div>
@@ -340,6 +364,7 @@ function Logistics() {
 
 /* ─── PAGE ───────────────────────────────────────── */
 export default function PlacePage() {
+  const { tokens: { S } } = useTheme();
   return (
     <>
       <Cursor />
@@ -347,10 +372,15 @@ export default function PlacePage() {
       <Navbar />
       <main>
         <PlaceHero />
+        <Mq items={["Coastal Majesty", "Kerala Heritage", "Cliff Perspective"]} size="sm" bg={S} />
         <QuickFacts />
+        <Mq items={["Varkala Cliff", "Arabian Sands", "Soulful Escape"]} size="sm" bg={S} />
         <DestAbout />
+        <Mq items={["Coastal Majesty", "Kerala Heritage", "The Red Cliff", "Arabian Sands"]} bg={S} />
         <Itinerary />
+        <Mq items={["Journey Blueprint", "Daily Rhythm", "The Itinerary"]} size="sm" bg={S} />
         <GoodToKnow />
+        <Mq items={["Logistics Hub", "Safety Network", "Arrival Logic"]} size="sm" bg={S} />
         <Logistics />
       </main>
       <Footer />

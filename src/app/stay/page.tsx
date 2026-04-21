@@ -6,7 +6,18 @@ import { Wifi, Waves, Sparkles, Dumbbell, Umbrella, Plane, GlassWater, Utensils,
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
 import { useTheme } from "../../components/Theme";
-import { Cursor, ProgressBar, Rev, Chars, SHdr, E } from "../../components/UI";
+import { Cursor, ProgressBar, Rev, Chars, SHdr, E, Soul, Mq } from "../../components/UI";
+
+function ImgParallax({ src, alt }: { src: string; alt: string }) {
+  const r = useRef(null);
+  const { scrollYProgress } = useScroll({ target: r, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+  return (
+    <div ref={r} style={{ width: "100%", height: "120%", position: "absolute", top: "-10%", left: 0 }}>
+      <motion.img src={src} style={{ y, width: "100%", height: "100%", objectFit: "cover" }} alt={alt} />
+    </div>
+  );
+}
 
 /* ─── VARIETY HERO CAROUSEL ──────────────────────── */
 const GALLERY = [
@@ -50,10 +61,16 @@ function StayHeroCarousel() {
   return (
     <section style={{ position: "relative", height: "100vh", background: BG, overflow: "hidden", display: "flex", alignItems: "center", paddingTop: 80 }}>
       {/* Background Decor */}
+      <motion.div 
+        animate={{ opacity: [0.1, 0.3, 0.1] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+        style={{ position: "absolute", top: 0, left: 0, right: 0, height: "50%", background: "linear-gradient(to bottom, rgba(0,151,178,0.3), transparent)", zIndex: 2, pointerEvents: "none" }} 
+      />
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "50%", background: "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent)", zIndex: 2, pointerEvents: "none" }} />
       <div style={{ position: "absolute", top: "10%", left: "5%", zIndex: 2, pointerEvents: "none" }}>
-        <h1 className="font-display" style={{ fontSize: "clamp(3rem,8vw,6rem)", fontWeight: 700, color: W, letterSpacing: "-0.02em", lineHeight: 1 }}>AZURE HORIZON</h1>
-        <p style={{ fontSize: 13, letterSpacing: "0.4em", textTransform: "uppercase", color: "rgba(255,255,255,0.7)", marginTop: 12 }}>Luxury Island Resort & Spa</p>
+        <Chars text="AZURE HORIZON" cls="font-display" style={{ fontSize: "clamp(4rem, 13vw, 10rem)", fontWeight: 700, color: W, letterSpacing: "-0.02em", lineHeight: 1 }} />
+        <motion.p initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 }}
+          style={{ fontSize: 13, letterSpacing: "0.4em", textTransform: "uppercase", color: "rgba(255,255,255,0.7)", marginTop: 12 }}>Luxury Island Resort & Spa</motion.p>
       </div>
 
       {/* Invisible Pan Overlay */}
@@ -124,45 +141,51 @@ function StayAmenities() {
       <div style={{ maxWidth: 1320, margin: "0 auto" }}>
         
         {/* Overview Row */}
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 64, borderBottom: `1px solid ${B}`, paddingBottom: 80 }}>
-          <Rev style={{ flex: "1 1 400px" }}>
-            <p style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: A, fontWeight: 700, marginBottom: 24 }}>
-              <MapPin size={16} /> South Malé Atoll, Maldives
-            </p>
-            <h2 className="font-display" style={{ fontSize: "clamp(2.5rem,5vw,4.5rem)", fontWeight: 700, color: FG, lineHeight: 1.1, marginBottom: 24 }}>
-              A sanctuary suspended between sky and sea.
-            </h2>
-            <p style={{ fontSize: 15, color: M, lineHeight: 1.8 }}>
-              Azure Horizon is a pinnacle of luxury resorts, harmonizing stunning architectural design with the raw beauty of natural reef systems. Whether you seek vibrant water sports or isolated serenity at our overwater spa, the resort offers an untethered escape from the mainland pace.
-            </p>
-          </Rev>
-          <Rev delay={0.2} style={{ flex: "1 1 400px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px 48px", alignContent: "center" }}>
-            {amenities.map((am, i) => (
-              <div key={am.label} style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <div style={{ width: 44, height: 44, borderRadius: "50%", background: S, border: `1px solid ${B}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <am.icon size={18} color={A} />
-                </div>
-                <span style={{ fontSize: 13, fontWeight: 600, color: FG }}>{am.label}</span>
-              </div>
-            ))}
-          </Rev>
-        </div>
+        <Soul y={100} s={0.1}>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 64, borderBottom: `1px solid ${B}`, paddingBottom: 80 }}>
+            <Rev style={{ flex: "1 1 400px" }}>
+              <p style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: A, fontWeight: 700, marginBottom: 24 }}>
+                <MapPin size={16} /> South Malé Atoll, Maldives
+              </p>
+              <Chars text="A sanctuary suspended" cls="font-display" style={{ fontSize: "clamp(2.5rem,5vw,4.5rem)", fontWeight: 700, color: FG, lineHeight: 1.1, marginBottom: 8 }} />
+              <Chars text="between sky and sea." delay={0.2} cls="font-display" style={{ fontSize: "clamp(2.5rem,5vw,4.5rem)", fontWeight: 700, color: A, lineHeight: 1.1, marginBottom: 24 }} />
+              <p style={{ fontSize: 15, color: M, lineHeight: 1.8 }}>
+                Azure Horizon is a pinnacle of luxury resorts, harmonizing stunning architectural design with the raw beauty of natural reef systems. Whether you seek vibrant water sports or isolated serenity at our overwater spa, the resort offers an untethered escape from the mainland pace.
+              </p>
+            </Rev>
+            <Rev delay={0.2} style={{ flex: "1 1 400px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px 48px", alignContent: "center" }}>
+              {amenities.map((am, i) => (
+                <motion.div key={am.label} 
+                  animate={{ y: [0, (i % 2 === 0 ? -5 : 5), 0] }}
+                  transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" }}
+                  style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: "50%", background: S, border: `1px solid ${B}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <am.icon size={18} color={A} />
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: FG }}>{am.label}</span>
+                </motion.div>
+              ))}
+            </Rev>
+          </div>
+        </Soul>
 
         {/* Facilities Row */}
-        <div style={{ paddingTop: 80, display: "flex", flexWrap: "wrap", gap: 64 }}>
-           <Rev style={{ width: 240 }}>
-             <h3 className="font-display" style={{ fontSize: 28, fontWeight: 700, color: FG, marginBottom: 12 }}>Facilities <br/>& Services</h3>
-             <p style={{ fontSize: 12, color: M, lineHeight: 1.6 }}>Comprehensive hospitality ensuring zero friction during your stay.</p>
-           </Rev>
-           <Rev delay={0.2} style={{ flex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" }}>
-             {facilities.map(fac => (
-               <div key={fac} style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 20px", background: S, borderRadius: 12, border: `1px solid ${B}` }}>
-                 <CheckCircle size={16} color={A} />
-                 <span style={{ fontSize: 13, color: FG, fontWeight: 500 }}>{fac}</span>
-               </div>
-             ))}
-           </Rev>
-        </div>
+        <Soul y={120} r={5}>
+          <div style={{ paddingTop: 80, display: "flex", flexWrap: "wrap", gap: 64 }}>
+             <Rev style={{ width: 240 }}>
+               <h3 className="font-display" style={{ fontSize: 28, fontWeight: 700, color: FG, marginBottom: 12 }}>Facilities <br/>& Services</h3>
+               <p style={{ fontSize: 12, color: M, lineHeight: 1.6 }}>Comprehensive hospitality ensuring zero friction during your stay.</p>
+             </Rev>
+             <Rev delay={0.2} style={{ flex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" }}>
+               {facilities.map(fac => (
+                 <div key={fac} style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 20px", background: S, borderRadius: 12, border: `1px solid ${B}` }}>
+                   <CheckCircle size={16} color={A} />
+                   <span style={{ fontSize: 13, color: FG, fontWeight: 500 }}>{fac}</span>
+                 </div>
+               ))}
+             </Rev>
+          </div>
+        </Soul>
 
       </div>
     </section>
@@ -203,9 +226,10 @@ function StayRooms() {
           {ROOMS.map((room, i) => (
             <Rev key={room.name} delay={i * 0.1}>
               <div style={{ display: "flex", flexWrap: "wrap", background: W, borderRadius: 32, overflow: "hidden", border: `1px solid ${B}` }}>
-                <div style={{ flex: "1 1 400px", minHeight: 300, position: "relative" }}>
-                  <img src={`/gallery/${room.img}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt={room.name} />
-                  <div style={{ position: "absolute", top: 20, left: 20, padding: "6px 12px", background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", borderRadius: 8, color: "#fff", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 600 }}>
+                {/* Parallax Image Container */}
+                <div style={{ flex: "1 1 400px", height: 400, position: "relative", overflow: "hidden" }}>
+                  <ImgParallax src={`/gallery/${room.img}`} alt={room.name} />
+                  <div style={{ position: "absolute", top: 20, left: 20, padding: "8px 16px", background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)", borderRadius: 12, color: "#fff", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 600 }}>
                     {room.units}
                   </div>
                 </div>
@@ -260,7 +284,7 @@ function StayPoliciesAndContact() {
       <div style={{ maxWidth: 1320, margin: "0 auto", display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 80 }} className="pol-contact-grid">
         
         {/* Policies Accordion */}
-        <Rev>
+        <Soul y={150} r={-3}>
           <SHdr idx="03" label="Policies & Rules" />
           <div style={{ borderTop: `1px solid ${B}` }}>
             {POLICIES.map((rule) => {
@@ -284,7 +308,7 @@ function StayPoliciesAndContact() {
               );
             })}
           </div>
-        </Rev>
+        </Soul>
 
         {/* Contact Block */}
         <Rev delay={0.2}>
@@ -328,6 +352,7 @@ function StayPoliciesAndContact() {
 
 /* ─── PAGE ───────────────────────────────────────── */
 export default function StayPage() {
+  const { tokens: { S } } = useTheme();
   return (
     <>
       <Cursor />
@@ -335,8 +360,11 @@ export default function StayPage() {
       <Navbar />
       <main>
         <StayHeroCarousel />
+        <Mq items={["Island Sanctuary", "The Living Reef", "Azure Deep"]} size="sm" bg={S} />
         <StayAmenities />
+        <Mq items={["Island Sanctuary", "Ocean Perspective", "Curated Luxury", "Azure Horizon"]} dir="r" size="lg" bg={S} />
         <StayRooms />
+        <Mq items={["Direct Connection", "Bespoke Service", "Privacy Guaranteed"]} size="sm" bg={S} />
         <StayPoliciesAndContact />
       </main>
       <Footer />

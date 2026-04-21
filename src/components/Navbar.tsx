@@ -14,6 +14,7 @@ export function Navbar() {
     { label: "Home", href: "/" },
     { label: "Experience", href: "/experience" },
     { label: "Stay", href: "/stay" },
+    { label: "Food", href: "/food" },
     { label: "Place", href: "/place" },
     { label: "Tickets", href: "/#tickets" }
   ];

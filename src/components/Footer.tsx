@@ -1,63 +1,103 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { useTheme } from "./Theme";
 import { Rev, Chars } from "./UI";
 
 export function Footer() {
-  const { tokens: { A, AH, AL, BG, FG, M, S, B, W }, theme, toggleTheme } = useTheme();
-  const t1 = "SOLSTICE · JUNE 21 2026 · MUMBAI · NAMMA STUDIO · ART & MUSIC · EDITION 01 · ";
+  const { tokens: { A, AH, AL, BG, FG, M, S, B, W } } = useTheme();
+  const footerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: footerRef,
+    offset: ["start end", "end end"]
+  });
+
+  // The Squeeze Animation
+  const scaleX = useTransform(scrollYProgress, [0, 0.9, 1], [0.4, 0.95, 1]);
+  const letterSpacing = useTransform(scrollYProgress, [0, 1], ["2em", "-0.02em"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6, 1], [0, 0.5, 1]);
+
   return (
-    <footer style={{ background: FG, color: BG, borderTop: `1px solid ${B}` }}>
-      <Rev>
-        <div style={{ borderBottom: "1px solid #2A2A2A", padding: "88px 36px" }}>
-          <div style={{ maxWidth: 1320, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 48 }}>
-            <div>
-              <p style={{ fontSize: 8, letterSpacing: "0.35em", textTransform: "uppercase", color: AH, marginBottom: 14, fontWeight: 600 }}>Stay in the Loop</p>
-              <Chars text="First to know." cls="font-display" style={{ fontSize: "clamp(1.8rem,4vw,3rem)", fontWeight: 700, color: BG, lineHeight: 1.05, overflow: "hidden" }} />
-              <Chars text="First to arrive." cls="font-display" delay={0.1} style={{ fontSize: "clamp(1.8rem,4vw,3rem)", fontWeight: 700, color: AH, lineHeight: 1.05, overflow: "hidden" }} />
-            </div>
-            <div style={{ display: "flex", gap: 0, width: "100%", maxWidth: 440 }}>
-              <input id="newsletter-email" type="email" placeholder="your@email.com"
+    <footer 
+      ref={footerRef}
+      style={{ background: FG, color: BG, borderTop: `1px solid ${B}`, overflow: "hidden" }}
+    >
+      <div style={{ borderBottom: `1px solid ${B}`, padding: "120px 36px 80px" }}>
+        <div style={{ maxWidth: 1320, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 100, alignItems: "center" }} className="footer-top">
+          <div>
+            <p style={{ fontSize: 9, letterSpacing: "0.4em", textTransform: "uppercase", color: AH, marginBottom: 24, fontWeight: 700 }}>Stay Synchronized</p>
+            <h2 className="font-display" style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", fontWeight: 700, color: BG, lineHeight: 1.1, marginBottom: 32 }}>Join the Collective.</h2>
+            <div style={{ display: "flex", gap: 0, width: "100%", maxWidth: 500, position: "relative" }}>
+              <input 
+                id="newsletter-email" type="email" placeholder="YOUR@EMAIL.LIVE"
                 suppressHydrationWarning
-                style={{ flex: 1, background: "#1a1a1a", border: "1px solid #2A2A2A", borderRight: "none", color: BG, fontSize: 13, padding: "15px 20px", outline: "none", minWidth: 0, fontFamily: "inherit" }}
-                onFocus={e => (e.currentTarget.style.borderColor = AH)}
-                onBlur={e => (e.currentTarget.style.borderColor = "#2A2A2A")} />
-              <motion.button id="newsletter-subscribe" className="shimmer-cta"
+                style={{ flex: 1, background: "transparent", border: `1px solid ${B}`, color: BG, fontSize: 11, letterSpacing: "0.1em", padding: "20px 24px", outline: "none", minWidth: 0, fontWeight: 500 }}
+              />
+              <motion.button 
                 suppressHydrationWarning
-                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}
-                style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", padding: "15px 22px", border: "none", cursor: "none", flexShrink: 0, whiteSpace: "nowrap" }}>
-                Notify Me
+                whileHover={{ background: BG, color: FG }}
+                style={{ background: "transparent", color: BG, border: `1px solid ${B}`, borderLeft: "none", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", padding: "0 32px", cursor: "pointer", fontWeight: 700 }}
+              >
+                Connect
               </motion.button>
             </div>
           </div>
+          
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60 }}>
+             <div>
+                <p style={{ fontSize: 8, letterSpacing: "0.25em", textTransform: "uppercase", color: M, marginBottom: 24 }}>Exploration</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                   {["Experience", "Sanctuary", "Culinary", "Chronology"].map(l => (
+                     <motion.a key={l} whileHover={{ x: 5, color: AH }} style={{ fontSize: 13, color: BG, textDecoration: "none", fontWeight: 500 }}>{l}</motion.a>
+                   ))}
+                </div>
+             </div>
+             <div>
+                <p style={{ fontSize: 8, letterSpacing: "0.25em", textTransform: "uppercase", color: M, marginBottom: 24 }}>Socials</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                   {["Instagram", "X / Twitter", "Behance", "Email"].map(l => (
+                     <motion.a key={l} whileHover={{ x: 5, color: AH }} style={{ fontSize: 13, color: BG, textDecoration: "none", fontWeight: 500 }}>{l}</motion.a>
+                   ))}
+                </div>
+             </div>
+          </div>
         </div>
-      </Rev>
+      </div>
 
-      {/* Dual marquees */}
-      <div style={{ overflow: "hidden", padding: "36px 0", borderBottom: "1px solid #2A2A2A" }}>
-        <div className="mq-l" style={{ display: "flex" }}>
-          {[0, 1, 2].map(i => <span key={i} className="font-display" style={{ fontSize: "clamp(3.5rem,9vw,8rem)", fontWeight: 700, color: "#1e1e1e", whiteSpace: "nowrap", letterSpacing: "-0.01em" }}>{t1}</span>)}
-        </div>
-      </div>
-      <div style={{ overflow: "hidden", padding: "36px 0", borderBottom: "1px solid #2A2A2A" }}>
-        <div className="mq-r" style={{ display: "flex" }}>
-          {[0, 1, 2].map(i => <span key={i} className="font-display" style={{ fontSize: "clamp(3.5rem,9vw,8rem)", fontWeight: 700, color: "transparent", WebkitTextStroke: "1px #2A2A2A", whiteSpace: "nowrap", letterSpacing: "-0.01em" }}>{t1}</span>)}
-        </div>
+      {/* THE KINETIC SQUEEZE HEADER */}
+      <div style={{ padding: "80px 0", textAlign: "center", borderBottom: `1px solid ${B}` }}>
+        <motion.h1 
+          className="font-display" 
+          style={{ 
+            fontSize: "clamp(4rem, 15vw, 18rem)", 
+            fontWeight: 900, 
+            color: BG, 
+            margin: 0, 
+            lineHeight: 0.8,
+            scaleX,
+            letterSpacing,
+            opacity,
+            transformOrigin: "center center"
+          }}
+        >
+          LITTLE KNOWN PLANET
+        </motion.h1>
       </div>
 
-      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "24px 36px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <span className="font-display" style={{ fontSize: 18, fontWeight: 700, color: BG }}>SOLSTICE</span>
-          <span style={{ fontSize: 10, color: "#444" }}>Presented by Namma Studio</span>
+      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "40px 36px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+           <div style={{ width: 12, height: 12, borderRadius: "50%", background: A }} />
+           <span style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: BG }}>A Little Known Planet Production</span>
         </div>
-        <div style={{ display: "flex", gap: 24 }}>
-          {[["Instagram", "#"], ["X / Twitter", "#"], ["Email", "mailto:hello@nammastudio.in"]].map(([l, h]) => (
-            <motion.a key={l} href={h} whileHover={{ color: AH, y: -2 }} style={{ fontSize: 10, letterSpacing: "0.1em", color: "#666", textDecoration: "none" }}>{l}</motion.a>
-          ))}
-        </div>
-        <p style={{ fontSize: 8, letterSpacing: "0.22em", textTransform: "uppercase", color: "#333" }}>© 2026 Namma Studio. All rights reserved.</p>
+        <p style={{ fontSize: 9, letterSpacing: "0.1em", color: M, textTransform: "uppercase" }}>© 2024 — All Rights Allocated.</p>
       </div>
+
+      <style>{`
+        @media (max-width: 1024px) {
+          .footer-top { grid-template-columns: 1fr !important; gap: 80px !important; }
+        }
+      `}</style>
     </footer>
   );
 }

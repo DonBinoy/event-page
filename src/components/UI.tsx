@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useSpring, useMotionValue, useInView, animate } from "framer-motion";
+import { motion, useScroll, useSpring, useMotionValue, useInView, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { useTheme } from "./Theme";
 
@@ -168,5 +168,20 @@ export function SHdr({ idx, label }: { idx: string; label: string }) {
       <span style={{ fontSize: 10, letterSpacing: "0.35em", fontWeight: 600, textTransform: "uppercase", color: A, whiteSpace: "nowrap" }}>{idx} — {label}</span>
       <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.2 }} style={{ flex: 1, height: 1, background: B, transformOrigin: "left" }} />
     </Rev>
+  );
+}
+/* ─── SOUL (2-WAY SCROLL) ────────────────────────── */
+export function Soul({ children, y = 80, s = 0.05, r = 0, delay = 0, style = {} }: { children: React.ReactNode; y?: number; s?: number; r?: number; delay?: number; style?: React.CSSProperties }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  
+  const moveY = useTransform(scrollYProgress, [0, 0.5, 1], [y, 0, -y]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1 - s, 1, 1 - s]);
+  const opacity = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
+
+  return (
+    <motion.div ref={ref} style={{ ...style, y: moveY, scale, opacity }} transition={{ ease: E, delay }}>
+      {children}
+    </motion.div>
   );
 }

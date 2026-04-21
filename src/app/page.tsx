@@ -312,8 +312,16 @@ function Hero() {
     <section ref={r} style={{ position: "relative", minHeight: "100vh", background: W, overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
       {/* Background decoration */}
       <motion.div style={{ y: bgY, opacity: fade, position: "absolute", inset: 0, pointerEvents: "none" }}>
-        <div style={{ position: "absolute", top: "-10%", left: "50%", transform: "translateX(-50%)", width: 800, height: 800, borderRadius: "50%", background: `radial-gradient(circle, ${A}0c 0%, transparent 60%)` }} />
-        <div style={{ position: "absolute", bottom: "-10%", right: "-5%", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${A}08 0%, transparent 60%)` }} />
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", top: "-10%", left: "50%", transform: "translateX(-50%)", width: 800, height: 800, borderRadius: "50%", background: `radial-gradient(circle, ${A}12 0%, transparent 60%)` }} 
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          style={{ position: "absolute", bottom: "-10%", right: "-5%", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${A}08 0%, transparent 60%)` }} 
+        />
         <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(${A}08 1px, transparent 1px), linear-gradient(90deg, ${A}08 1px, transparent 1px)`, backgroundSize: "80px 80px" }} />
         <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to bottom, transparent 40%, ${W} 100%)` }} />
       </motion.div>
@@ -355,13 +363,13 @@ function Hero() {
 
         <div style={{ overflow: "hidden" }}>
           <motion.h1 initial={{ y: "110%" }} animate={{ y: 0 }} transition={{ duration: 1.2, ease: E, delay: 0.65 }}
-            className="font-display" style={{ fontSize: "clamp(5.5rem,17vw,16rem)", fontWeight: 700, lineHeight: 0.86, color: FG, margin: 0, letterSpacing: "-0.03em" }}>
+            className="font-display" style={{ fontSize: "clamp(4.5rem, 14vw, 11rem)", fontWeight: 700, lineHeight: 0.86, color: FG, margin: 0, letterSpacing: "-0.03em" }}>
             SOL
           </motion.h1>
         </div>
         <div style={{ overflow: "hidden" }}>
           <motion.h1 initial={{ y: "110%" }} animate={{ y: 0 }} transition={{ duration: 1.2, ease: E, delay: 0.79 }}
-            className="font-display" style={{ fontSize: "clamp(5.5rem,17vw,16rem)", fontWeight: 700, lineHeight: 0.86, color: "transparent", WebkitTextStroke: `2px ${A}`, margin: 0, letterSpacing: "-0.03em" }}>
+            className="font-display" style={{ fontSize: "clamp(4.5rem, 14vw, 11rem)", fontWeight: 700, lineHeight: 0.86, color: "transparent", WebkitTextStroke: `2px ${A}`, margin: 0, letterSpacing: "-0.03em" }}>
             STICE
           </motion.h1>
         </div>
