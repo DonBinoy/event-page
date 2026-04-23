@@ -10,9 +10,9 @@ import { Cursor, ProgressBar, Rev, Chars, SHdr, E, Soul, Mq } from "../../compon
 
 /* ─── DATA ────────────────────────────────────────── */
 const DISHES = [
-  { id: "01", name: "Seared Atlantic Scallops", price: "$42", rating: 4.9, cuisine: "Modern Fusion", tags: ["Signature", "Seafood"], img: "venue.png", desc: "Nitrogen-infused foam, micro-cilantro, and a hint of smoked saffron." },
-  { id: "02", name: "Aged Wagyu Carpaccio", price: "$58", rating: 4.8, cuisine: "Japanese Influence", tags: ["Chef's Pick", "Aged"], img: "art.png", desc: "30-day dry-aged wagyu with truffle emulsion and gold leaf accents." },
-  { id: "03", name: "Deconstructed Saffron Risotto", price: "$34", rating: 4.7, cuisine: "Heritage Indian", tags: ["Vegetarian", "Classic"], img: "abstract.png", desc: "Parmesan crisps, infused heirloom broth, and slow-cooked arborio." },
+  { id: "01", name: "Seared Atlantic Scallops", price: "$42", rating: 4.9, cuisine: "Modern Fusion", tags: ["Signature", "Seafood"], img: "dish_scallops.png", desc: "Nitrogen-infused foam, micro-cilantro, and a hint of smoked saffron." },
+  { id: "02", name: "Aged Wagyu Carpaccio", price: "$58", rating: 4.8, cuisine: "Japanese Influence", tags: ["Chef's Pick", "Aged"], img: "dish_wagyu.png", desc: "30-day dry-aged wagyu with truffle emulsion and gold leaf accents." },
+  { id: "03", name: "Deconstructed Saffron Risotto", price: "$34", rating: 4.7, cuisine: "Heritage Indian", tags: ["Vegetarian", "Classic"], img: "dish_risotto.png", desc: "Parmesan crisps, infused heirloom broth, and slow-cooked arborio." },
 ];
 
 const SPECS = [
@@ -22,45 +22,60 @@ const SPECS = [
   { icon: Award, label: "Accolades", value: "2 Michelin Star" },
 ];
 
-/* ─── CULINARY HERO (NOIR) ───────────────────────── */
+/* ─── CULINARY HERO (CINEMATIC) ──────────────────── */
 function CulinaryHero() {
-  const { tokens: { A, FG, M, W, B, BG } } = useTheme();
+  const { tokens: { A, FG, M, B, BG, S } } = useTheme();
   const r = useRef(null);
   const { scrollYProgress } = useScroll({ target: r, offset: ["start start", "end start"] });
   
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+  const yHero = useTransform(scrollYProgress, [0, 1], [0, 300]);
+  const yText = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const yIng1 = useTransform(scrollYProgress, [0, 1], [0, -400]);
+  const yIng2 = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
-    <section ref={r} style={{ position: "relative", minHeight: "130vh", background: BG, overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-      {/* Background Kinetic Text */}
-      <motion.div style={{ position: "absolute", top: "50%", left: "50%", x: "-50%", y: "-50%", opacity: 0.04, whiteSpace: "nowrap", pointerEvents: "none" }}>
-        <h1 className="font-display" style={{ fontSize: "60vw", color: FG, fontWeight: 900, letterSpacing: "-0.05em" }}>GASTRO</h1>
+    <section ref={r} style={{ position: "relative", minHeight: "140vh", background: BG, overflow: "hidden" }}>
+      {/* Background Image Layer */}
+      <motion.div style={{ y: yHero, position: "absolute", inset: 0, zIndex: 1, opacity: 0.6 }}>
+        <img src="/gallery/hero_dish.png" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.4) saturate(1.2)" }} alt="Hero Dish" />
       </motion.div>
 
-      {/* Floating Image Stack */}
-      <div style={{ position: "relative", width: "100%", maxWidth: 1400, height: 800, margin: "0 auto", zIndex: 5 }}>
-        <motion.div style={{ y: y1, scale, position: "absolute", top: "10%", left: "15%", width: 320, height: 460, borderRadius: 24, overflow: "hidden", border: `1px solid ${B}`, boxShadow: "0 50px 100px rgba(0,0,0,0.2)" }}>
-          <img src="/gallery/venue.png" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.8) contrast(1.2)" }} alt="" />
-        </motion.div>
-        
-        <motion.div style={{ y: y2, position: "absolute", top: "30%", right: "10%", width: 440, height: 580, borderRadius: 24, overflow: "hidden", border: `1px solid ${B}`, boxShadow: "0 50px 100px rgba(0,0,0,0.2)" }}>
-          <img src="/gallery/art.png" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.7) sepia(0.2)" }} alt="" />
-        </motion.div>
+      {/* Floating Ingredients Layer */}
+      <motion.div style={{ y: yIng1, position: "absolute", top: "20%", left: "5%", width: 300, height: 400, zIndex: 2, pointerEvents: "none" }}>
+        <img src="/gallery/ingredients.png" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "blur(2px) brightness(0.8)" }} alt="" />
+      </motion.div>
+      <motion.div style={{ y: yIng2, position: "absolute", bottom: "10%", right: "5%", width: 400, height: 500, zIndex: 2, pointerEvents: "none" }}>
+        <img src="/gallery/ingredients.png" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "blur(4px) brightness(0.6) rotate(180deg)" }} alt="" />
+      </motion.div>
 
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center", zIndex: 10 }}>
-           <p style={{ fontSize: 10, letterSpacing: "0.5em", textTransform: "uppercase", color: A, fontWeight: 700, marginBottom: 24 }}>Edition 01 — Culinary Narrative</p>
-           <h1 className="font-display" style={{ fontSize: "clamp(5rem, 15vw, 12rem)", fontWeight: 700, color: FG, lineHeight: 0.85, letterSpacing: "-0.04em", margin: 0 }}>THE <br/><span style={{ color: "transparent", WebkitTextStroke: `1px ${FG}` }}>KITCHEN</span></h1>
-           <motion.div initial={{ width: 0 }} animate={{ width: 100 }} transition={{ duration: 1, delay: 0.5 }} style={{ height: 2, background: A, margin: "40px auto" }} />
-        </div>
+      {/* Content Layer */}
+      <div style={{ position: "relative", zIndex: 10, height: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+        <motion.div style={{ opacity, y: yText }}>
+           <p style={{ fontSize: 12, letterSpacing: "0.6em", textTransform: "uppercase", color: A, fontWeight: 700, marginBottom: 32 }}>Epicurean Odyssey — Edition 01</p>
+           <h1 className="font-display" style={{ fontSize: "clamp(3.5rem, 8vw, 7.5rem)", fontWeight: 800, color: FG, lineHeight: 1.1, letterSpacing: "0.15em", margin: 0 }}>
+             PURE <br/><span style={{ color: "transparent", WebkitTextStroke: `1px ${FG}` }}>CRAFT</span>
+           </h1>
+           <div style={{ marginTop: 64, maxWidth: 600, padding: "0 20px" }}>
+              <p style={{ fontSize: 20, color: M, lineHeight: 1.6, fontWeight: 400, fontStyle: "italic" }}>
+                "Where the alchemy of tradition meets the precision of the future."
+              </p>
+           </div>
+        </motion.div>
       </div>
-      
-      <div style={{ position: "absolute", bottom: 80, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 64, opacity: 0.4 }}>
-         {["MOLECULAR", "HERITAGE", "AVANT-GARDE"].map(t => (
-           <span key={t} style={{ fontSize: 9, letterSpacing: "0.4em", textTransform: "uppercase", color: FG, fontWeight: 600 }}>{t}</span>
-         ))}
+
+      {/* Scroll Indicator */}
+      <div style={{ position: "absolute", bottom: 60, left: "50%", transform: "translateX(-50%)", zIndex: 10, display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+        <span style={{ fontSize: 9, letterSpacing: "0.4em", textTransform: "uppercase", color: M, fontWeight: 600 }}>Explore the Menu</span>
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          style={{ width: 1, height: 60, background: `linear-gradient(to bottom, ${A}, transparent)` }} 
+        />
       </div>
+
+      {/* Vignette Overlay */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 5, background: "radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 100%)", pointerEvents: "none" }} />
     </section>
   );
 }
@@ -82,7 +97,7 @@ function ChefSection() {
          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 120, alignItems: "center" }} className="chef-grid">
             <Soul r={-5} s={0.1}>
                <div style={{ background: S, borderRadius: 40, height: 750, overflow: "hidden", border: `1px solid ${B}` }}>
-                 <img src="/gallery/dancer.png" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(1) brightness(0.8)" }} alt="Chef Aris Thorne" />
+                 <img src="/gallery/chef_action.png" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.9)" }} alt="The Culinary Craft" />
                </div>
             </Soul>
             

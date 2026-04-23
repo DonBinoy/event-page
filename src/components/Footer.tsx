@@ -32,12 +32,40 @@ export function Footer() {
               <input 
                 id="newsletter-email" type="email" placeholder="YOUR@EMAIL.LIVE"
                 suppressHydrationWarning
-                style={{ flex: 1, background: "transparent", border: `1px solid ${B}`, color: BG, fontSize: 11, letterSpacing: "0.1em", padding: "20px 24px", outline: "none", minWidth: 0, fontWeight: 500 }}
+                style={{ 
+                  flex: 1, 
+                  background: "transparent", 
+                  borderTop: `1px solid ${B}`,
+                  borderRight: `1px solid ${B}`,
+                  borderBottom: `1px solid ${B}`,
+                  borderLeft: `1px solid ${B}`,
+                  color: BG, 
+                  fontSize: 11, 
+                  letterSpacing: "0.1em", 
+                  padding: "20px 24px", 
+                  outline: "none", 
+                  minWidth: 0, 
+                  fontWeight: 500 
+                }}
               />
               <motion.button 
                 suppressHydrationWarning
                 whileHover={{ background: BG, color: FG }}
-                style={{ background: "transparent", color: BG, border: `1px solid ${B}`, borderLeft: "none", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", padding: "0 32px", cursor: "pointer", fontWeight: 700 }}
+                style={{ 
+                  background: "transparent", 
+                  color: BG, 
+                  borderTop: `1px solid ${B}`, 
+                  borderRight: `1px solid ${B}`, 
+                  borderBottom: `1px solid ${B}`, 
+                  borderLeft: `1px solid transparent`,
+                  borderLeftWidth: 0,
+                  fontSize: 9, 
+                  letterSpacing: "0.2em", 
+                  textTransform: "uppercase", 
+                  padding: "0 32px", 
+                  cursor: "pointer", 
+                  fontWeight: 700 
+                }}
               >
                 Connect
               </motion.button>

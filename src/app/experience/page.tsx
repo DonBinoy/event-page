@@ -8,141 +8,100 @@ import { Cursor, ProgressBar, Rev, Chars, Mq, SHdr, E, Soul } from "../../compon
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
 
-/* ─── AURA PORTAL ────────────────────────────────── */
-function AuraPortal() {
-  const { tokens: { A, B } } = useTheme();
-  const imgs = ["abstract.png", "art.png", "concert.png", "crowd.png", "dancer.png", "venue.png"];
+/* ─── KINETIC BACKGROUND ────────────────────────── */
+function ExperienceBg({ progress }: { progress: any }) {
+  const { tokens: { A, BG } } = useTheme();
   
-  // Magnetic Cursor Logic
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const { innerWidth, innerHeight } = window;
-    mouseX.set((clientX / innerWidth) - 0.5);
-    mouseY.set((clientY / innerHeight) - 0.5);
-  };
+  const scale = useTransform(progress, [0, 1], [1, 1.2]);
+  const opacity = useTransform(progress, [0, 0.8], [0.6, 0]);
+  const blur = useTransform(progress, [0, 0.5], [0, 10]);
 
   return (
-    <div 
-      onMouseMove={handleMouseMove}
-      style={{ position: "absolute", inset: 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1 }}
-    >
-      {/* Central Aperture */}
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
       <motion.div 
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.5, ease: E }}
         style={{ 
-          position: "relative",
-          width: "min(80vw, 900px)",
-          height: "min(80vw, 750px)",
-          borderRadius: "120px 400px 180px 320px",
-          background: "rgba(255,255,255,0.03)",
-          backdropFilter: "blur(40px)",
-          border: `1px solid ${B}`,
-          overflow: "hidden",
-          boxShadow: "0 100px 200px -50px rgba(0,0,0,0.1)"
+          scale, opacity, 
+          filter: `blur(${blur}px)`,
+          width: "100%", height: "100%", position: "relative" 
         }}
       >
-        <motion.img 
-          src="/gallery/venue.png" 
-          style={{ 
-            width: "120%", height: "120%", objectFit: "cover", 
-            x: useTransform(mouseX, [-0.5, 0.5], [25, -25]),
-            y: useTransform(mouseY, [-0.5, 0.5], [25, -25]),
-            filter: "brightness(0.9) contrast(1.1)"
-          }}
+        <img src="/gallery/concert.png" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.5) contrast(1.1)" }} alt="" />
+        {/* Dynamic Aura Overlays */}
+        <motion.div 
+          animate={{ opacity: [0.1, 0.3, 0.1] }}
+          transition={{ duration: 5, repeat: Infinity }}
+          style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 30% 40%, ${A}44 0%, transparent 60%)` }} 
         />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.3), transparent)" }} />
+        <motion.div 
+          animate={{ opacity: [0.1, 0.2, 0.1] }}
+          transition={{ duration: 7, repeat: Infinity, delay: 2 }}
+          style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 70% 60%, ${A}33 0%, transparent 50%)` }} 
+        />
       </motion.div>
-
-      {/* Floating Kinetic Cards (Drift + Magnetic) */}
-      {imgs.map((src, i) => {
-        const angle = (i / imgs.length) * Math.PI * 2;
-        const radius = 480;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * (radius * 0.55);
-        
-        return (
-          <motion.div
-            key={src}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ 
-              opacity: 1, scale: 1,
-              x: [x - 25, x + 25, x - 25],
-              y: [y + 25, y - 25, y + 25],
-            }}
-            transition={{ 
-              opacity: { delay: 0.6 + i * 0.1, duration: 1 },
-              scale: { delay: 0.6 + i * 0.1, duration: 1 },
-              x: { duration: 12 + i * 3, repeat: Infinity, ease: "easeInOut" },
-              y: { duration: 14 + i * 3, repeat: Infinity, ease: "easeInOut" },
-            }}
-            style={{
-              position: "absolute",
-              width: 240, height: 320,
-              borderRadius: 32,
-              overflow: "hidden",
-              border: `1px solid ${B}`,
-              boxShadow: "0 60px 120px -30px rgba(0,0,0,0.28)",
-              zIndex: i % 2 === 0 ? 10 : 0,
-              // Magnetism & Scroll Parallax
-              translateX: useTransform(mouseX, [-0.5, 0.5], [x - (40 * (i + 1)), x + (40 * (i + 1))]),
-              translateY: useTransform(mouseY, [-0.5, 0.5], [y - (25 * (i + 1)), y + (25 * (i + 1))]),
-              scale: useTransform(mouseY, [-0.5, 0.5], [1, 1.05])
-            }}
-          >
-            <img src={`/gallery/${src}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
-          </motion.div>
-        );
-      })}
+      <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to bottom, transparent 60%, ${BG} 100%)` }} />
     </div>
   );
 }
 
 /* ─── HERO ───────────────────────────────────────── */
 function HeroExperience() {
-  const { tokens: { A, FG, M, B, W } } = useTheme();
+  const { tokens: { A, FG, M, B, W, BG } } = useTheme();
   const r = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: r, offset: ["start start", "end start"] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  
+  const textY = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const fade = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const tracking = useTransform(scrollYProgress, [0, 1], ["-0.06em", "0.2em"]);
 
   return (
-    <section ref={r} style={{ position: "relative", minHeight: "115vh", background: W, overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-      <motion.div style={{ y: bgY, opacity: fade, position: "absolute", inset: 0, zIndex: 0 }}>
-         <AuraPortal />
-      </motion.div>
+    <section ref={r} style={{ position: "relative", minHeight: "110vh", background: BG, overflow: "hidden", display: "flex", alignItems: "center" }}>
+      <ExperienceBg progress={scrollYProgress} />
 
-      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 36px", position: "relative", zIndex: 10, textAlign: "center" }}>
-         <motion.div style={{ opacity: fade }}>
-           <p className="font-mono" style={{ fontSize: 10, letterSpacing: "0.6em", textTransform: "uppercase", color: A, fontWeight: 700, marginBottom: 40 }}>01 — The Narrative Experience</p>
-           <h1 className="font-display" style={{ fontSize: "clamp(5rem, 16vw, 15rem)", fontWeight: 700, color: FG, lineHeight: 0.85, letterSpacing: "-0.04em", margin: 0 }}>ULTRA <br/><span style={{ color: "transparent", WebkitTextStroke: `1.5px ${A}` }}>REALITY</span></h1>
+      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 60px", position: "relative", zIndex: 10, width: "100%" }}>
+         <motion.div style={{ opacity: fade, y: textY }}>
+           <p className="font-mono" style={{ fontSize: 12, letterSpacing: "1em", textTransform: "uppercase", color: A, fontWeight: 800, marginBottom: 40 }}>The Narrative Experience</p>
            
-           <div style={{ display: "flex", justifyContent: "center", gap: 100, marginTop: 80 }} className="hero-stats">
-              <div style={{ textAlign: "left", maxWidth: 300 }}>
-                 <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: M, marginBottom: 12 }}>Atmospherics</p>
-                 <p style={{ fontSize: 14, color: FG, lineHeight: 1.7 }}>Cinematic soundscapes and 4D sensory nodes synchronized with the local environment.</p>
+           <h1 className="font-display" style={{ fontSize: "clamp(3.5rem, 10vw, 8rem)", fontWeight: 900, color: FG, lineHeight: 1.1, letterSpacing: "0.05em", margin: 0, textTransform: "uppercase" }}>
+             ULTRA
+           </h1>
+           <h1 className="font-display" style={{ fontSize: "clamp(3.5rem, 10vw, 8rem)", fontWeight: 900, color: "transparent", WebkitTextStroke: `1px ${FG}`, lineHeight: 1.1, letterSpacing: "0.05em", margin: 0, textTransform: "uppercase" }}>
+             REALITY
+           </h1>
+           
+           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 100, marginTop: 100, maxWidth: 1000 }} className="hero-stats">
+              <div style={{ textAlign: "left" }}>
+                 <p style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: A, marginBottom: 20, fontWeight: 700 }}>01. Atmospherics</p>
+                 <p style={{ fontSize: 18, color: M, lineHeight: 1.6, fontWeight: 400 }}>A multisensory odyssey that blurs the line between perception and possibility.</p>
               </div>
-              <div style={{ textAlign: "left", maxWidth: 300 }}>
-                 <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: M, marginBottom: 12 }}>Interaction</p>
-                 <p style={{ fontSize: 14, color: FG, lineHeight: 1.7 }}>Haptic touchpoints and bioluminescent paths that respond to your rhythmic presence.</p>
+              <div style={{ textAlign: "left" }}>
+                 <p style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: A, marginBottom: 20, fontWeight: 700 }}>02. Interaction</p>
+                 <p style={{ fontSize: 18, color: M, lineHeight: 1.6, fontWeight: 400 }}>High-fidelity touchpoints that respond to your presence in real-time.</p>
               </div>
            </div>
          </motion.div>
       </div>
 
+      {/* Side Label */}
+      <div style={{ position: "absolute", top: "50%", right: 40, transform: "translateY(-50%) rotate(90deg)", transformOrigin: "right center", zIndex: 10 }}>
+         <span style={{ fontSize: 9, letterSpacing: "1em", textTransform: "uppercase", color: A, opacity: 0.5 }}>SCROLL TO TRANSCEND</span>
+      </div>
+
       <motion.div 
-        style={{ position: "absolute", bottom: 40, left: "50%", x: "-50%", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, opacity: fade }}
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        style={{ position: "absolute", bottom: 60, left: 60, display: "flex", alignItems: "center", gap: 20, opacity: fade }}
       >
-        <span style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: M }}>Discover souls</span>
-        <ArrowDown size={14} color={A} />
+        <motion.div 
+          animate={{ height: [40, 80, 40] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          style={{ width: 1, background: A }} 
+        />
+        <span style={{ fontSize: 10, letterSpacing: "0.5em", textTransform: "uppercase", color: M, fontWeight: 600 }}>Explore Souls</span>
       </motion.div>
-      <style>{`@media(max-width: 900px) { .hero-stats { flex-direction: column; gap: 40px !important; align-items: center; text-align: center !important; } .hero-stats > div { text-align: center !important; } }`}</style>
+      
+      <style>{`
+        @media(max-width: 900px) { 
+          .hero-stats { grid-template-columns: 1fr !important; gap: 40px !important; } 
+        }
+      `}</style>
     </section>
   );
 }
@@ -261,21 +220,26 @@ function ExperienceDetails() {
                    />
 
                    {[
-                     { time: "04:00 PM", text: "Priority Entry & Welcome Lounge", sub: "Skip the lines and enter through the heritage gate." },
-                     { time: "04:30 PM", text: "Backstage Sonic Tour", sub: "Explore the internal architecture and stage mechanics." },
-                     { time: "05:15 PM", text: "Exclusive Visual Arts Preview", sub: "A private first-look at the curated gallery installations." },
-                     { time: "06:00 PM", text: "Event Opening Sequence", sub: "Witness the transition as the first notes break the silence." }
+                     { time: "04:00 PM", text: "Priority Entry & Welcome Lounge", sub: "Skip the lines and enter through the heritage gate.", img: "venue.png" },
+                     { time: "04:30 PM", text: "Backstage Sonic Tour", sub: "Explore the internal architecture and stage mechanics.", img: "abstract.png" },
+                     { time: "05:15 PM", text: "Exclusive Visual Arts Preview", sub: "A private first-look at the curated gallery installations.", img: "art.png" },
+                     { time: "06:00 PM", text: "Event Opening Sequence", sub: "Witness the transition as the first notes break the silence.", img: "concert.png" }
                    ].map((it, i) => (
                      <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 + 0.4 }}
                         whileHover={{ x: 10 }}
                         style={{ display: "flex", gap: 32, alignItems: "flex-start", zIndex: 1, cursor: "default" }}>
                        <div style={{ width: 15, height: 15, borderRadius: "50%", background: W, border: `3px solid ${A}`, marginTop: 6, flexShrink: 0 }} />
-                       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                         <div style={{ display: "flex", gap: 16, alignItems: "baseline" }}>
-                            <span style={{ fontSize: 12, fontWeight: 800, color: A, fontFamily: "monospace" }}>{it.time}</span>
-                            <span className="font-display" style={{ fontSize: "clamp(1.4rem, 2.5vw, 1.8rem)", fontWeight: 700, color: FG }}>{it.text}</span>
+                       <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+                         <div style={{ width: 100, height: 70, borderRadius: 12, overflow: "hidden", border: `1px solid ${B}`, flexShrink: 0 }}>
+                           <img src={`/gallery/${it.img}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
                          </div>
-                         <p style={{ fontSize: 13, color: M }}>{it.sub}</p>
+                         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                           <div style={{ display: "flex", gap: 16, alignItems: "baseline" }}>
+                              <span style={{ fontSize: 12, fontWeight: 800, color: A, fontFamily: "monospace" }}>{it.time}</span>
+                              <span className="font-display" style={{ fontSize: "clamp(1.2rem, 2vw, 1.6rem)", fontWeight: 700, color: FG }}>{it.text}</span>
+                           </div>
+                           <p style={{ fontSize: 13, color: M }}>{it.sub}</p>
+                         </div>
                        </div>
                      </motion.div>
                    ))}
